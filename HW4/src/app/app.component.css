@@ -1,0 +1,86 @@
+body{
+  background-image: url("http://cs-server.usc.edu:45678/hw/hw8/images/background.png")
+}
+.container-fluid
+{
+	margin-top: 10px;
+  width:80%;
+}
+h4
+{
+	text-align: center;
+	padding-top: 20px;
+	font-weight: bold !important;
+}
+.form-group
+{
+	width: 100%;
+}
+#ticker
+{
+	width: 100%;
+}
+
+.col-md-3{
+	 margin-top:20px;
+}
+.col-md-6{
+	 margin-top:20px;
+}
+.example-full-width {
+  width: 100%;
+}
+
+:host {
+  display: block;
+  overflow: hidden; /* Hide everything that doesn't fit compoennt */
+}
+.parent {
+  height: 100%;
+  width: 200%;      /* Make the parent element to take up twice
+                       of the component's width */
+  display: flex;    /* Align all children in a row */
+  div { flex: 1; }  /* Evenly divide width between children */
+}
+
+tr:nth-child(odd){background-color: #f2f2f2}
+
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+
+.container-fluid
+{
+  margin-top: 10px;
+  width:100%;
+}
+
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+    font-size: 12px;
+}
+
+.mat-sort-header-arrow
+{
+  display:none !important;
+}
+
+.cdk-visually-hidden
+{
+  display:none !important;
+}
+
+.mat-sort-container
+{
+  display: inline-block;
+}

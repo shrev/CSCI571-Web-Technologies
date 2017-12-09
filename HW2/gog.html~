@@ -1,0 +1,155 @@
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Homework 4</title>
+</head>
+<style>
+#form
+{
+      margin-top : 50%;
+      text-align :center;
+      width:100%;
+       margin-right: auto; margin-left: auto;
+}
+
+body
+{  
+   text-align:center;
+   display: table;
+   margin:0 auto; 
+   vertical-align:middle;
+   height:100%;
+}
+#l1
+{
+  font-size : 20px;
+  font-weight :bold;
+  margin-bottom:10px;
+}
+#fname
+{
+  width: 190px;
+}
+#b1
+{
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+       height: 25px;
+       margin-top:10px;
+}
+</style>
+<script>
+function find() {
+   var url = document.getElementById('fname').value;
+   var http = new XMLHttpRequest();
+   http.open('HEAD', url, false);
+   http.send();
+   if (http.status != 404) parse(url);
+   else alert("File not found");
+   
+}
+
+function parse(url)
+{
+   var xmlhttp = new XMLHttpRequest();
+   xmlhttp.open("GET", url, false);
+   xmlhttp.send(null);
+   var doc=xmlhttp.responseText;
+   var obj = JSON.parse(doc)["Mainline"]["Table"];
+   var win = window.open(window.location.href, "win", "titlebar=yes,width=1250,height=1000,scrollbars=yes");
+   win.document.title = "US Airlines Listings";
+   win.document.write('<html>');
+   win.document.write('<head><title>US Airlines Listings</title></head>');
+   win.document.write('<body>');
+   win.document.write('<table border="1">'); 
+   var hd = obj["Header"]["Data"];
+   win.document.write('<tr>'); 
+   for(var i in hd)
+   { 
+      win.document.write('<th>'+hd[i]+'</th>');
+   }
+   win.document.write('</tr>');
+   if(!obj.hasOwnProperty("Row")) {
+     win.close();
+     alert("No Row key present in json");
+   }
+   else
+   {
+     var jrows = obj["Row"];
+     if(jrows.length == 0) ;
+     else 
+     {  
+        for(var j=0;j< jrows.length; j++)
+        {
+             win.document.write('<tr>');  
+             var cn =0;
+             for(var k in jrows[j])
+             {
+               if( k == 'Hubs')
+               {
+                 var h = jrows[j][k]['Hub'];
+                 win.document.write('<td>');
+                 win.document.write('<ul>');
+                 if(h.length == 0) ;
+                 else
+                 {
+                  var t=0;
+                 for( o =0; o<h.length; o++)
+                 {
+                    if(o==t) {
+                         if(h[o]==''||h[o]=="") t++;
+			 else  win.document.write('<li style="font-weight:bold">'+h[o]+'</li>');
+			}
+                    else if(h[o]==''||h[o]=="") ;
+                    else
+                    {
+                      win.document.write('<li>'+h[o]+'</li>');
+                    }
+                 }
+                 }
+                 win.document.write('</td>');
+                 win.document.write('</ul>');
+               }  
+               else if(cn==0 && k != 'Airline') win.document.write("<td></td>");
+               else if(cn==1 && k != "IATA") win.document.write("<td></td>");
+               else if(cn==2 && k != "Hubs") win.document.write("<td></td>");
+               else if(cn==3 && k != "Notes") win.document.write("<td></td>");
+               else if(cn==4 && k != "HomePage") win.document.write("<td></td>");
+               else if(cn==5 && k != "Plane") win.document.write("<td></td>");
+               else if( k == 'HomePage')
+               {
+                 win.document.write('<td><a href="'+jrows[j][k]+'">'+jrows[j][k]+'</a></td>'); 
+               }
+                else if( k == 'Plane')
+               {
+                 win.document.write('<td><img src="'+jrows[j][k]+'" style="width:400px;height:200px"/></td>'); 
+               }
+               else{ 
+                 win.document.write('<td>'+jrows[j][k]+'</td>');    
+               }
+               cn = cn+1;
+             }          
+             win.document.write('</tr>'); 
+           
+        }
+     }
+   }
+   win.document.write('</table>'); 
+   win.document.write('</body>');      
+   win.document.write('</html>');   
+}
+</script>
+<body>
+<div id="form" style="display:block">
+<form onsubmit="find()" accept-charset="utf-8">
+<label id="l1">Enter URL For Airlines List JSON File</label>
+<br>
+<br>
+<input type="text" id="fname" /><br><br>
+<button id="b1" >Submit Query</button>
+</form>
+</div>
+<noscript>
+</body>
+</html>
+

@@ -1,0 +1,233 @@
+
+<div class="container-fluid">
+  <div class="panel panel-default">
+    <div class="panel-body">
+    <h4>Stock Market Search</h4>
+    <form class="form-inline">
+      <div class="form-group row">
+       <label for="ticker" class="control-label col-md-3" style="font-size:12px">Enter Stock Ticker Symbol:<span style="color: red">*</span></label>
+       <div class="col-md-5">
+              <form>
+        <mat-form-field class="example-full-width">
+       <div>
+             <input matInput class="form-control" id="ticker" placeholder="e.g AAPL" aria-label="Stock" [matAutocomplete]="auto" [formControl]="stockCtrl" />
+            <mat-autocomplete #auto="matAutocomplete" style="position:absolute!important">
+              <mat-option *ngFor="let stock of filteredStocks | async" [value]="stock.Symbol">
+                  {{stock.Symbol}}-{{stock.Name}}
+                </mat-option>
+            </mat-autocomplete>
+    </div>
+    </mat-form-field>
+  </form>
+              <div id="validation" style="margin-top:-10px;font-size:10px"></div>
+         </div>
+         <div class="col-md-4">
+          <button type="button" class="btn btn-primary" id="submit_button" disabled><span class="glyphicon glyphicon-search"></span> Get Quote</button>
+          <button type="button" class="btn btn-default" id="clear" style="background-color:#F0F0F0"><span class="glyphicon glyphicon-refresh"></span> Clear</button>
+         </div>
+    </div>
+    </form>
+    </div>
+  </div>
+  <hr style="color: white;margin-top: 0;margin-bottom: 5px">
+</div>
+
+
+<slide-panel [activePane]="isLeftVisible ? 'left' : 'right'" >
+  <div leftPane>
+    <div class="container-fluid">
+       <div class="well" style="background-color: white; padding:20px">
+      <div id="info_panel" class="panel panel-default">
+    <div class="panel-heading" style="background-color:#F0F0F0;overflow:hidden;" >
+     <div style="display:flex">
+    <button  type="button" id="dir2" class="btn btn-default" (click)="myEvent($event)" style="text-align:center;background-color:#F8F8F8;z-index: 2;flex:0.4"><span class="glyphicon glyphicon-chevron-left"></span></button>
+    <div style="font-weight:bold;text-align:center;flex:15">Stock Price</div>
+     </div>
+        
+    </div>
+    <div class="panel-body">
+  <ul class="nav nav-pills">
+  <li class="active" id="curr_stock"><a href="javascript:donothing(this.parentElement)"><span class="glyphicon glyphicon-time"></span> Current Stock</a></li>
+  <li id="his_charts"><a href="javascript:donothing(this)"><span class="glyphicon glyphicon-align-right" style=" transform: rotate(90deg); "></span> Historical Charts</a></li>
+  <li id="news_feeds"><a href="javascript:donothing(this)"><span class="glyphicon glyphicon-link"></span> News Feeds</a></li>
+  </ul>
+  <hr style="color:#F0F0F0;margin-top:10px;margin-bottom:10px">
+     
+    
+        <div class="col-md-12" id="his_text" style="display:none;margin-top:30px">
+  <div class="progress" id="pbar3" style="margin-top:75px;margin-bottom:40px">
+  <div class="progress-bar progress-bar-striped active" id="pbar4" role="progressbar"
+  aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+ 
+  </div>
+</div>
+ <div id="his_text_1"></div>
+
+  <div id="hist_error" style="display:none;text-align: center;width:100%;padding:12px;border-color:red;background-color:  #ffb3b3">
+     Error Failed to Get Historical Charts Data
+  </div>
+</div>
+  <div class="col-md-12" id="news_text" style="display:none;margin-top:30px">
+     <div class="progress" id="pbar5" style="margin-top:75px;margin-bottom:40px">
+  <div class="progress-bar progress-bar-striped active" id="pbar6" role="progressbar"
+  aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+  </div>
+  </div>
+  <div id="news_text_1">
+  </div>
+  <div id="news_error" style="display:none;text-align: center;width:100%;padding:12px;border-color:red;background-color:  #ffb3b3">
+     Error Failed to Get News Data
+  </div>
+</div>
+  <div id="curr_text" class="row">
+      <div class="col-md-6">
+         <div class="row">
+  <div class="col-sm-6"><span style="font-weight:bold">Stock Details</span></div>
+  <div class="col-sm-6" style="text-align: right">
+    <button id="fav" disabled (click)= "favEvent()"   val=0 style="background-color:#F8F8F8;text-align:center"><span id="fav_icon_empty"  class="glyphicon glyphicon-star-empty" style="width:20px;height:20px"></span> <span id="fav_icon_show" class="glyphicon glyphicon-star" style="display:none;color:gold;width:20px;height:20px"></span></button>
+    <button id="fb" disabled style="text-align:center"><img src="http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png" style="width:20px;height:20px"></button>
+  </div>
+  </div>
+  <div class="col-md-12"  style="margin-top:30px">
+  <div class="progress" id="pbar1" style="margin-top:75px;margin-bottom:40px">
+  <div class="progress-bar progress-bar-striped active" id= "pbar2" role="progressbar"
+  aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+  </div>
+</div>
+<table id="stock_info_tab">
+  <tbody id="tbody_1">
+</tbody>
+  </table>
+  <div id="info_error" style="display:none;text-align: center;width:100%;padding:12px;border-color:red;background-color:  #ffb3b3">
+     Error Failed to Get Currrent Stock Data
+  </div>
+  </div>
+</div>
+  <div class="col-md-6">
+   <ul class="nav nav-tabs">
+  <li id='price' class="active"><a href="javascript:donothing(this)">Price</a></li>
+  <li id='sma' ><a href="javascript:donothing(this)">SMA</a></li>
+  <li id='ema'><a href="javascript:donothing(this)">EMA</a></li>
+  <li id='stoch'><a href="javascript:donothing(this)">STOCH</a></li>
+  <li id='rsi'><a href="javascript:donothing(this)">RSI</a></li>
+  <li id='cci'><a href="javascript:donothing(this)">CCI</a></li>
+  <li id='adx'><a href="javascript:donothing(this)">ADX</a></li>
+    <li id='bbands'><a href="javascript:donothing(this)">BBANDS</a></li>
+     <li id='macd'><a href="javascript:donothing(this)">MACD</a></li>
+</ul>
+<div class="col-md-12" id="indicator" style="display:block;padding:5px">
+     <div class="progress" id="pbar7" style="margin-top:40px;margin-bottom:40px">
+  <div class="progress-bar progress-bar-striped active" id="pbar8" role="progressbar"
+  aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:20%">
+  
+</div>
+</div>
+<div id="indicator_1"></div>
+<div id="indicator_error" style="display:none;text-align: center;width:100%;padding:12px;border-color:red;background-color:  #ffb3b3">
+     Error Failed to Get Price Data
+  </div>
+</div>
+
+  </div>
+  </div>
+</div>
+</div>
+  </div>
+  </div>
+</div>
+
+
+
+  <div rightPane>
+<div class="container-fluid">
+        <div class="well" style="background-color: white; padding:20px">
+  <div id="favorite_panel" class="panel panel-default" style="border-color:#F0F0F0">
+    <div class="panel-heading" style="background-color:#F0F0F0;overflow:hidden; " >
+      <div>
+      <div style="float:left">
+        <span style="font-weight: bold;font-size: 13px">Favorite List</span>
+      </div>
+      <div style="float:right">
+      <div class="checkbox" (click)="autorefresh()" id="off" style="float:left;margin-top: 0px;margin-bottom: 0px">
+      <label style="height:12px !important">
+        <input type="checkbox" data-toggle="toggle" data-size="small">
+       </label>
+      </div>
+      <div style="float:right">
+        <button  class="btn btn-default" (click)="refresh()" style="background-color:#F8F8F8"><span class="glyphicon glyphicon-refresh"></span></button>
+        <button  type="button" id="dir1" disabled class="btn btn-default" (click)="myEvent($event)" style="background-color:#F8F8F8"><span class="glyphicon glyphicon-chevron-right"></span></button>
+      </div>
+      </div>
+    </div>
+  </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="col-md-4" style="margin-top: 0px;text-align: center;display: flex;
+    align-items: center;">
+          <label style="font-weight:bold;vertical-align: middle" > Sort By</label>   
+        </div>
+        <div class="dropdown col-md-6" style="margin-top:0px;padding:0px">
+  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style="width: 100%;margin:0px"><div id="dop1" style="float: left">Default</div><div id="c1" style="float:right;text-align: right"> <span class="caret" style="transform: rotate(180deg);margin-top:4px"></span><br><span class="caret" style="margin-bottom:3px;margin-top: 1px"></span></div></button>
+  <ul class="dropdown-menu" style="width:100%">
+    <li><a href="javascript:donothing();" id="ddef">Default</a></li>
+    <li><a href="javascript:donothing();" id="dsym">Symbol</a></li>
+    <li><a href="javascript:donothing();" id="dspr">Price</a></li>
+    <li><a href="javascript:donothing();" id="dv" >Volume</a></li>
+    <li><a href="javascript:donothing();" id="dc">Change</a></li>
+    <li><a href="javascript:donothing();" id="dcp">Change Percentage</a></li>
+  </ul>
+</div>
+      </div>
+      <div class="col-md-5">
+           <div class="col-md-4" style="margin-top: 0px;text-align: center;display: flex;
+    align-items: center;">
+          <label style="font-weight:bold;vertical-align: middle;display: inline-block" > Order By</label>   
+        </div>
+           <div class="dropdown col-md-6" style="margin-top:0px;padding:0px">
+           <button disabled class="btn btn-default dropdown-toggle" id="dop2b" type="button" data-toggle="dropdown" style="width: 100%;margin:0px"><div id="dop2" style="float: left">Ascending</div><div id="c2" style="float:right;text-align: right"> <span class="caret" style="transform: rotate(180deg);margin-top:4px"></span><br><span class="caret" style="margin-bottom:3px;margin-top: 1px"></span></div></button>
+  <ul class="dropdown-menu">
+    <li><a href="javascript:donothing();" id="dasc">Ascending</a></li>
+    <li><a href="javascript:donothing();" id="ddes">Descending</a></li>
+  </ul>
+</div>
+      </div>
+    </div>
+    <div class="col-sm-12">
+
+  <table class=".table-responsive" matSort (matSortChange)="sortData($event)">
+  <tr>
+    <th id="tsym" mat-sort-header="symbol">Symbol</th>
+    <th id="tsp" mat-sort-header="price">Stock Price</th>
+    <th  id="tch" mat-sort-header="change" style="margin-right:0px;padding-right:2px;display: inline-block !important;">Change </th>
+    <th id="tchp" mat-sort-header="changep" style="margin-left:0px;padding-left: 2px;display: inline-block !important;"> (Change Percent) </th>
+    <th style="margin-right:0px;padding-right:2px;display: inline-block !important;"></th>
+    <th id="tv" mat-sort-header="volume">Volume</th>
+    <th id="trash"></th>
+  </tr>
+
+    <tr *ngFor="let stockTable of sortedData">
+    <td><a name="{{stockTable.ind}}" href="javascript:donothing();" onclick="favLink(this)">{{stockTable.symbol}}</a></td>
+    <td>{{stockTable.price}}</td>
+    <td style="margin-right:0px;padding-right:2px;display: inline-block !important;">{{stockTable.change}}</td>
+    <td style="margin-right:0px;padding-right:2px;display: inline-block !important;">{{stockTable.changep}}</td>
+    <td style="margin-right:0px;padding-right:2px;display: inline-block !important;"><img src="{{stockTable.link}}" style="width:auto;height:15px"></td>
+    <td>{{stockTable.volume}}</td>
+    <td><button  id="{{stockTable.symbol}}" type="button" (click)="deleteFav($event)" onclick="del(this)" class="btn btn-default" style="background-color:#F0F0F0"><span id="{{stockTable.symbol}}" class="glyphicon glyphicon-trash"></span></button></td>
+  </tr>
+
+</table>
+
+
+
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</slide-panel>
+
+ <canvas id="canvas" width="1000px" height="600px" 
+           style="display:none;"></canvas>
+<script type="text/javascript">window.fav="";</script>
