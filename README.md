@@ -16,8 +16,7 @@ This repository contains code from the assignments of the Web Technology course 
    - Javascript
    - JSON Parsing
    
-   Link : http://www-scf.usc.edu/~shreyave/tyrell/gog.html
-          (Enter airlinelist.json)
+   Link : http://www-scf.usc.edu/~shreyave/tyrell/gog.html - Enter airlinelist.json
           
 3. HW3 :
    Stock Market Site : Server Side Scripting, Concepts involved :
