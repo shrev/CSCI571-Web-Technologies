@@ -1,5 +1,4 @@
 # CSCI571-Web-Technologieshttp://www-scf.usc.edu/~shreyave/tyrell/gog.html
-       (Enter airlinelist.json)
 
 This repository contains code from the assignments of the Web Technology course I undertook at USC
 
